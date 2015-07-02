@@ -1,13 +1,7 @@
-<div class="container">
+
   {{#each row in grifd}}
-<div class="row">
-    {{#each file in row}}
-  <div class="col-md-3">
-      {{show-thumb path=file.path cl=dbClient}}
-  </div>
-    {{/each}}
-</div>
+    {{gif-row class="row" row=row dbClient=dbClient}}
   {{/each}}
-</div>
+
 
 {{outlet}}

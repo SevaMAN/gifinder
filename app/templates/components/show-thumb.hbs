@@ -7,7 +7,9 @@
   <img {{bind-attr src="gifUrl" class="showGif::hide :gif" }}>
   <img {{bind-attr src="thumbUrl" class="showGif:hide :preview" }}>
 
+
   <div class="caption text-right">
-      <a href="#" class="btn btn-default btn-sm" role="button">Link</a>
+    <small class="pull-left text-left" > {{gif.name}} </small>
+    <a href="#" class="btn btn-default btn-sm" role="button">Link</a>
   </div>
 {{yield}}

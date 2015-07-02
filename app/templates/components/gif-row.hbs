@@ -1,0 +1,7 @@
+{{#each file in row}}
+  <div class="col-md-3">
+    {{show-thumb gif=file path=file.path cl=dbClient isGifVisible=enteredViewport}}
+  </div>
+{{/each}}
+
+{{yield}}

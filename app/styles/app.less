@@ -1,7 +1,25 @@
 @import 'bootstrap';
+@import 'variables';
 
 .thumbnail {
   display: inline-block;
+  min-height: 200px;
+  a&:hover,
+  a&:focus,
+  a&.active {
+    border-color: darken(@thumbnail-border, 10%);
+  }
+  a&.success {
+    border-color: @brand-success;
+    &:hover,
+    &:focus,
+    &.active {
+      border-color: darken(@brand-success, 10%);
+    }
+  }
+  small {
+    word-break: break-all;
+  }
   img {
     min-width: 15px;
     min-height: 15px;

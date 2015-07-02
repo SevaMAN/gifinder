@@ -11,9 +11,7 @@ export default Ember.Route.extend({
   model:function () {
     var client = this.get('dropboxClient');
     return new Ember.RSVP.Promise(function(resolve,reject) {
-      client.stat('Public/dropgif',{readDir:true},function (wtf,data,contents){
-        console.log(data)
-        console.log(contents)
+      client.stat('Public/answgif',{readDir:true},function (wtf,data,contents){
         resolve(contents);
       });
     })

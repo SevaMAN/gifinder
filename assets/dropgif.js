@@ -313,6 +313,7 @@ define('dropgif/router', ['exports', 'ember', 'dropgif/config/environment'], fun
 
   Router.map(function () {
     this.route('login');
+    this.route('gifs', { path: '/' });
   });
 
   exports['default'] = Router;
@@ -370,27 +371,27 @@ define('dropgif/routes/login', ['exports', 'ember'], function (exports, Ember) {
 
   'use strict';
 
-  exports['default'] = Ember['default'].Route.extend({
-    beforeModel: function beforeModel() {
-      var client = new Dropbox.Client({ key: 'vvf0ru33x9anjsx' });
+  exports['default'] = Ember['default'].Route.extend({});
+
+  /*  beforeModel: function() {
+      var client = new Dropbox.Client({ key: "vvf0ru33x9anjsx" });
 
       client.authenticate();
 
-      this.set('dropboxClient', client);
+      this.set('dropboxClient',client);
     },
-    model: function model() {
+    model:function () {
       var client = this.get('dropboxClient');
-      return new Ember['default'].RSVP.Promise(function (resolve, reject) {
-        client.stat('Public/answgif', { readDir: true }, function (wtf, data, contents) {
+      return new Ember.RSVP.Promise(function(resolve,reject) {
+        client.stat('Public/answgif',{readDir:true},function (wtf,data,contents){
           resolve(contents);
         });
-      });
+      })
     },
-    setupController: function setupController(c, m) {
-      c.set('model', m);
-      c.set('dbClient', this.get('dropboxClient'));
-    }
-  });
+    setupController:function (c, m) {
+      c.set('model',m);
+      c.set('dbClient',this.get('dropboxClient'));
+    }*/
 
 });
 define('dropgif/templates/application', ['exports'], function (exports) {
@@ -577,19 +578,17 @@ define('dropgif/templates/components/show-thumb', ['exports'], function (exports
       hasRendered: false,
       build: function build(dom) {
         var el0 = dom.createDocumentFragment();
-        var el1 = dom.createTextNode("\n  ");
+        var el1 = dom.createElement("img");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
         dom.appendChild(el0, el1);
         var el1 = dom.createElement("img");
         dom.appendChild(el0, el1);
-        var el1 = dom.createTextNode("\n  ");
-        dom.appendChild(el0, el1);
-        var el1 = dom.createElement("img");
-        dom.appendChild(el0, el1);
-        var el1 = dom.createTextNode("\n\n\n  ");
+        var el1 = dom.createTextNode("\n\n");
         dom.appendChild(el0, el1);
         var el1 = dom.createElement("div");
         dom.setAttribute(el1,"class","caption text-right");
-        var el2 = dom.createTextNode("\n    ");
+        var el2 = dom.createTextNode("\n  ");
         dom.appendChild(el1, el2);
         var el2 = dom.createElement("small");
         dom.setAttribute(el2,"class","pull-left text-left");
@@ -600,7 +599,7 @@ define('dropgif/templates/components/show-thumb', ['exports'], function (exports
         var el3 = dom.createTextNode(" ");
         dom.appendChild(el2, el3);
         dom.appendChild(el1, el2);
-        var el2 = dom.createTextNode("\n    ");
+        var el2 = dom.createTextNode("\n  ");
         dom.appendChild(el1, el2);
         var el2 = dom.createElement("a");
         dom.setAttribute(el2,"href","#");
@@ -609,10 +608,10 @@ define('dropgif/templates/components/show-thumb', ['exports'], function (exports
         var el3 = dom.createTextNode("Link");
         dom.appendChild(el2, el3);
         dom.appendChild(el1, el2);
-        var el2 = dom.createTextNode("\n  ");
+        var el2 = dom.createTextNode("\n");
         dom.appendChild(el1, el2);
         dom.appendChild(el0, el1);
-        var el1 = dom.createTextNode("\n");
+        var el1 = dom.createTextNode("\n\n");
         dom.appendChild(el0, el1);
         var el1 = dom.createComment("");
         dom.appendChild(el0, el1);
@@ -640,10 +639,10 @@ define('dropgif/templates/components/show-thumb', ['exports'], function (exports
         } else {
           fragment = this.build(dom);
         }
-        var element0 = dom.childAt(fragment, [1]);
-        var element1 = dom.childAt(fragment, [3]);
-        var morph0 = dom.createMorphAt(dom.childAt(fragment, [5, 1]),1,1);
-        var morph1 = dom.createMorphAt(fragment,7,7,contextualElement);
+        var element0 = dom.childAt(fragment, [0]);
+        var element1 = dom.childAt(fragment, [2]);
+        var morph0 = dom.createMorphAt(dom.childAt(fragment, [4, 1]),1,1);
+        var morph1 = dom.createMorphAt(fragment,6,6,contextualElement);
         element(env, element0, context, "bind-attr", [], {"src": "gifUrl", "class": "showGif::hide :gif"});
         element(env, element1, context, "bind-attr", [], {"src": "thumbUrl", "class": "showGif:hide :preview"});
         content(env, morph0, context, "gif.name");
@@ -816,7 +815,7 @@ define('dropgif/templates/login', ['exports'], function (exports) {
         hasRendered: false,
         build: function build(dom) {
           var el0 = dom.createDocumentFragment();
-          var el1 = dom.createTextNode("    ");
+          var el1 = dom.createTextNode("  ");
           dom.appendChild(el0, el1);
           var el1 = dom.createComment("");
           dom.appendChild(el0, el1);
@@ -858,11 +857,9 @@ define('dropgif/templates/login', ['exports'], function (exports) {
       hasRendered: false,
       build: function build(dom) {
         var el0 = dom.createDocumentFragment();
-        var el1 = dom.createTextNode("\n");
-        dom.appendChild(el0, el1);
         var el1 = dom.createComment("");
         dom.appendChild(el0, el1);
-        var el1 = dom.createTextNode("\n\n");
+        var el1 = dom.createTextNode("\n");
         dom.appendChild(el0, el1);
         var el1 = dom.createComment("");
         dom.appendChild(el0, el1);
@@ -890,8 +887,9 @@ define('dropgif/templates/login', ['exports'], function (exports) {
         } else {
           fragment = this.build(dom);
         }
-        var morph0 = dom.createMorphAt(fragment,1,1,contextualElement);
-        var morph1 = dom.createMorphAt(fragment,3,3,contextualElement);
+        var morph0 = dom.createMorphAt(fragment,0,0,contextualElement);
+        var morph1 = dom.createMorphAt(fragment,2,2,contextualElement);
+        dom.insertBoundary(fragment, 0);
         block(env, morph0, context, "each", [get(env, context, "grifd")], {"keyword": "row"}, child0, null);
         content(env, morph1, context, "outlet");
         return fragment;
@@ -1053,7 +1051,7 @@ define('dropgif/tests/routes/login.jshint', function () {
 
   module('JSHint - routes');
   test('routes/login.js should pass jshint', function() { 
-    ok(false, 'routes/login.js should pass jshint.\nroutes/login.js: line 17, col 7, Missing semicolon.\nroutes/login.js: line 5, col 22, \'Dropbox\' is not defined.\nroutes/login.js: line 13, col 52, \'reject\' is defined but never used.\n\n3 errors'); 
+    ok(true, 'routes/login.js should pass jshint.'); 
   });
 
 });

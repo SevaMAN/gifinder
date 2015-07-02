@@ -1,0 +1,13 @@
+<div class="container">
+  {{#each row in grifd}}
+<div class="row">
+    {{#each file in row}}
+  <div class="col-md-3">
+      {{show-thumb path=file.path cl=dbClient}}
+  </div>
+    {{/each}}
+</div>
+  {{/each}}
+</div>
+
+{{outlet}}

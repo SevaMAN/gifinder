@@ -1,0 +1,13 @@
+{{!-- {{#if showGif}}
+  <img {{bind-attr src="gifUrl" }} width="200">
+{{else}}
+  <img {{bind-attr src="thumbUrl" }} width="200">
+{{/if}} --}}
+
+  <img {{bind-attr src="gifUrl" class="showGif::hide :gif" }}>
+  <img {{bind-attr src="thumbUrl" class="showGif:hide :preview" }}>
+
+  <div class="caption text-right">
+      <a href="#" class="btn btn-default btn-sm" role="button">Link</a>
+  </div>
+{{yield}}

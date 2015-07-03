@@ -14,7 +14,8 @@
     "qunit": "~1.17.1",
     "ember-simple-auth": "0.8.0",
     "dropbox": "~0.10.3",
-    "bootstrap": "~3.3.5"
+    "bootstrap": "~3.3.5",
+    "dropbox-build": "*"
   },
   "overrides": {
     "dropbox": {

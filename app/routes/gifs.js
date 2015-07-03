@@ -1,10 +1,10 @@
 import Ember from 'ember';
 
 export default Ember.Route.extend({
-/*  beforeModel: function() {
+  beforeModel: function() {
     var client = new Dropbox.Client({ key: "vvf0ru33x9anjsx" });
 
-    client.authenticate();
+      client.authenticate();
 
     this.set('dropboxClient',client);
   },
@@ -19,5 +19,5 @@ export default Ember.Route.extend({
   setupController:function (c, m) {
     c.set('model',m);
     c.set('dbClient',this.get('dropboxClient'));
-  }*/
+  }
 });

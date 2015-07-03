@@ -4,7 +4,7 @@ module.exports = function(environment) {
   var ENV = {
     modulePrefix: 'dropgif',
     environment: environment,
-    baseURL: '/',
+    baseURL: '/gifinder/',
     locationType: 'auto',
     EmberENV: {
       FEATURES: {

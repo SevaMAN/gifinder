@@ -1296,7 +1296,7 @@ catch(err) {
 if (runningTests) {
   require("dropgif/tests/test-helper");
 } else {
-  require("dropgif/app")["default"].create({"name":"dropgif","version":"0.0.0.84dd6b2a"});
+  require("dropgif/app")["default"].create({"name":"dropgif","version":"0.0.0.47a4638b"});
 }
 
 /* jshint ignore:end */

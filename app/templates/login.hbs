@@ -1,5 +1,6 @@
-{{#each row in grifd}}
-  {{gif-row class="row" row=row dbClient=dbClient}}
-{{/each}}
+<div class="jumbotron">
+  <h1>Нужно подключить Dropbox!</h1>
+  <p><button {{action 'login'}} class="btn btn-success" >Подключить Dropbox</button></p>
+</div>
 
 {{outlet}}

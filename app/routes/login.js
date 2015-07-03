@@ -1,23 +1,28 @@
 import Ember from 'ember';
 
 export default Ember.Route.extend({
-/*  beforeModel: function() {
+  actions:{
+    login:function () {
+      var client = new Dropbox.Client({ key: "vvf0ru33x9anjsx" });
+      client.authenticate(function (error, client) {
+        if (error) {
+          return;
+        }
+        this.transitionTo('gifs');
+      }.bind(this));
+    }
+  },
+  beforeModel: function() {
     var client = new Dropbox.Client({ key: "vvf0ru33x9anjsx" });
 
-    client.authenticate();
-
-    this.set('dropboxClient',client);
-  },
-  model:function () {
-    var client = this.get('dropboxClient');
-    return new Ember.RSVP.Promise(function(resolve,reject) {
-      client.stat('Public/answgif',{readDir:true},function (wtf,data,contents){
-        resolve(contents);
-      });
-    })
-  },
-  setupController:function (c, m) {
-    c.set('model',m);
-    c.set('dbClient',this.get('dropboxClient'));
-  }*/
+    client.authenticate({interactive: false}, function (error, client) {
+      if (error) {
+        //TODO handle this
+        return;
+      }
+      if (client.isAuthenticated()) {
+        this.transitionTo('gifs');
+      }
+    }.bind(this));
+  }
 });

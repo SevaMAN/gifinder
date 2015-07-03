@@ -122,54 +122,9 @@ define('dropgif/controllers/gifs', ['exports', 'ember'], function (exports, Embe
 });
 define('dropgif/controllers/login', ['exports', 'ember'], function (exports, Ember) {
 
-  'use strict';
+	'use strict';
 
-  exports['default'] = Ember['default'].Controller.extend({
-    /*actions:{
-      authenticate: function() {
-        debugger;
-         var client = new Dropbox.Client({ key: "vvf0ru33x9anjsx" });
-         client.authenticate();
-         client.findByName('Photos','i_CVJ1wCmA0',function(){ 
-          debugger
-        })
-        debugger;
-         return;
-        Em.$.ajax({
-          url:'https://www.dropbox.com/1/oauth2/authorize',
-          type:'GET',
-          crossDomain: true,
-          data:{
-            'client_id':'vvf0ru33x9anjsx',
-            'response_type':'token',
-            'redirect_uri':'http://localhost:4200/login'
-          },
-          accepts: 'application/json',
-            success: function(data) {
-              debugger
-            },
-            error: function(er) {
-              debugger
-            }
-        });
-         var data = this.getProperties('identification', 'password');
-        return this.get('session').authenticate('simple-auth-authenticator:oauth2-password-grant', data);
-      }
-    }*/
-    grifd: (function () {
-      var array = [];
-
-      this.get('content').forEach(function (file, i) {
-        if (i % 4 === 0) {
-          array.push([file]);
-        } else {
-          array.objectAt(array.length - 1).push(file);
-        }
-      });
-
-      return array;
-    }).property('content.@each')
-  });
+	exports['default'] = Ember['default'].Controller.extend({});
 
 });
 define('dropgif/controllers/object', ['exports', 'ember'], function (exports, Ember) {
@@ -321,23 +276,9 @@ define('dropgif/router', ['exports', 'ember', 'dropgif/config/environment'], fun
 });
 define('dropgif/routes/application', ['exports', 'ember'], function (exports, Ember) {
 
-  'use strict';
+	'use strict';
 
-  exports['default'] = Ember['default'].Route.extend({});
-
-  /*  beforeModel: function (transition) {
-      var client = new Dropbox.Client({ key: "vvf0ru33x9anjsx" });
-
-      client.authenticate();
-
-      debugger
-      if (client.isAuthenticated()) {
-        this.transitionTo('gifs');
-      };
-      
-
-      // this.set('dropboxClient',client);
-    }*/
+	exports['default'] = Ember['default'].Route.extend({});
 
 });
 define('dropgif/routes/gifs', ['exports', 'ember'], function (exports, Ember) {
@@ -348,14 +289,28 @@ define('dropgif/routes/gifs', ['exports', 'ember'], function (exports, Ember) {
     beforeModel: function beforeModel() {
       var client = new Dropbox.Client({ key: 'vvf0ru33x9anjsx' });
 
-      client.authenticate();
-
-      this.set('dropboxClient', client);
+      client.authenticate({ interactive: false }, (function (error, client) {
+        if (error) {
+          //TODO handle this
+          return;
+        }
+        if (client.isAuthenticated()) {
+          this.set('dropboxClient', client);
+        } else {
+          this.transitionTo('login');
+        }
+      }).bind(this));
     },
     model: function model() {
       var client = this.get('dropboxClient');
       return new Ember['default'].RSVP.Promise(function (resolve, reject) {
-        client.stat('Public/answgif', { readDir: true }, function (wtf, data, contents) {
+        if (!client) {
+          reject({});
+        };
+        client.stat('Public/answgif', { readDir: true }, function (error, data, contents) {
+          if (error) {
+            reject(error);
+          }
           resolve(contents);
         });
       });
@@ -371,27 +326,32 @@ define('dropgif/routes/login', ['exports', 'ember'], function (exports, Ember) {
 
   'use strict';
 
-  exports['default'] = Ember['default'].Route.extend({});
-
-  /*  beforeModel: function() {
-      var client = new Dropbox.Client({ key: "vvf0ru33x9anjsx" });
-
-      client.authenticate();
-
-      this.set('dropboxClient',client);
+  exports['default'] = Ember['default'].Route.extend({
+    actions: {
+      login: function login() {
+        var client = new Dropbox.Client({ key: 'vvf0ru33x9anjsx' });
+        client.authenticate((function (error, client) {
+          if (error) {
+            return;
+          }
+          this.transitionTo('gifs');
+        }).bind(this));
+      }
     },
-    model:function () {
-      var client = this.get('dropboxClient');
-      return new Ember.RSVP.Promise(function(resolve,reject) {
-        client.stat('Public/answgif',{readDir:true},function (wtf,data,contents){
-          resolve(contents);
-        });
-      })
-    },
-    setupController:function (c, m) {
-      c.set('model',m);
-      c.set('dbClient',this.get('dropboxClient'));
-    }*/
+    beforeModel: function beforeModel() {
+      var client = new Dropbox.Client({ key: 'vvf0ru33x9anjsx' });
+
+      client.authenticate({ interactive: false }, (function (error, client) {
+        if (error) {
+          //TODO handle this
+          return;
+        }
+        if (client.isAuthenticated()) {
+          this.transitionTo('gifs');
+        }
+      }).bind(this));
+    }
+  });
 
 });
 define('dropgif/templates/application', ['exports'], function (exports) {
@@ -409,20 +369,7 @@ define('dropgif/templates/application', ['exports'], function (exports) {
         var el0 = dom.createDocumentFragment();
         var el1 = dom.createElement("div");
         dom.setAttribute(el1,"class","container");
-        var el2 = dom.createTextNode("\n");
-        dom.appendChild(el1, el2);
-        var el2 = dom.createElement("div");
-        dom.setAttribute(el2,"class","page-header");
-        var el3 = dom.createTextNode("\n  ");
-        dom.appendChild(el2, el3);
-        var el3 = dom.createElement("h1");
-        var el4 = dom.createTextNode("- Псс, парень. Хочешь немного гифок? ");
-        dom.appendChild(el3, el4);
-        dom.appendChild(el2, el3);
-        var el3 = dom.createTextNode("\n");
-        dom.appendChild(el2, el3);
-        dom.appendChild(el1, el2);
-        var el2 = dom.createTextNode("\n\n");
+        var el2 = dom.createTextNode("\n  ");
         dom.appendChild(el1, el2);
         var el2 = dom.createComment("");
         dom.appendChild(el1, el2);
@@ -453,7 +400,7 @@ define('dropgif/templates/application', ['exports'], function (exports) {
         } else {
           fragment = this.build(dom);
         }
-        var morph0 = dom.createMorphAt(dom.childAt(fragment, [0]),3,3);
+        var morph0 = dom.createMorphAt(dom.childAt(fragment, [0]),1,1);
         content(env, morph0, context, "outlet");
         return fragment;
       }
@@ -704,6 +651,52 @@ define('dropgif/templates/components/zero-clipboard', ['exports'], function (exp
   }()));
 
 });
+define('dropgif/templates/error', ['exports'], function (exports) {
+
+  'use strict';
+
+  exports['default'] = Ember.HTMLBars.template((function() {
+    return {
+      isHTMLBars: true,
+      revision: "Ember@1.12.0",
+      blockParams: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      build: function build(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createElement("div");
+        dom.setAttribute(el1,"class","alert alert-danger");
+        dom.setAttribute(el1,"role","alert");
+        var el2 = dom.createTextNode("Что-то поломалось.");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      render: function render(context, env, contextualElement) {
+        var dom = env.dom;
+        dom.detectNamespace(contextualElement);
+        var fragment;
+        if (env.useFragmentCache && dom.canClone) {
+          if (this.cachedFragment === null) {
+            fragment = this.build(dom);
+            if (this.hasRendered) {
+              this.cachedFragment = fragment;
+            } else {
+              this.hasRendered = true;
+            }
+          }
+          if (this.cachedFragment) {
+            fragment = dom.cloneNode(this.cachedFragment, true);
+          }
+        } else {
+          fragment = this.build(dom);
+        }
+        return fragment;
+      }
+    };
+  }()));
+
+});
 define('dropgif/templates/gifs', ['exports'], function (exports) {
 
   'use strict';
@@ -760,6 +753,19 @@ define('dropgif/templates/gifs', ['exports'], function (exports) {
       hasRendered: false,
       build: function build(dom) {
         var el0 = dom.createDocumentFragment();
+        var el1 = dom.createElement("div");
+        dom.setAttribute(el1,"class","page-header");
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("h1");
+        var el3 = dom.createTextNode("- Псс, парень. Хочешь немного гифок? ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n\n");
+        dom.appendChild(el0, el1);
         var el1 = dom.createComment("");
         dom.appendChild(el0, el1);
         var el1 = dom.createTextNode("\n");
@@ -790,9 +796,8 @@ define('dropgif/templates/gifs', ['exports'], function (exports) {
         } else {
           fragment = this.build(dom);
         }
-        var morph0 = dom.createMorphAt(fragment,0,0,contextualElement);
-        var morph1 = dom.createMorphAt(fragment,2,2,contextualElement);
-        dom.insertBoundary(fragment, 0);
+        var morph0 = dom.createMorphAt(fragment,2,2,contextualElement);
+        var morph1 = dom.createMorphAt(fragment,4,4,contextualElement);
         block(env, morph0, context, "each", [get(env, context, "grifd")], {"keyword": "row"}, child0, null);
         content(env, morph1, context, "outlet");
         return fragment;
@@ -806,49 +811,6 @@ define('dropgif/templates/login', ['exports'], function (exports) {
   'use strict';
 
   exports['default'] = Ember.HTMLBars.template((function() {
-    var child0 = (function() {
-      return {
-        isHTMLBars: true,
-        revision: "Ember@1.12.0",
-        blockParams: 0,
-        cachedFragment: null,
-        hasRendered: false,
-        build: function build(dom) {
-          var el0 = dom.createDocumentFragment();
-          var el1 = dom.createTextNode("  ");
-          dom.appendChild(el0, el1);
-          var el1 = dom.createComment("");
-          dom.appendChild(el0, el1);
-          var el1 = dom.createTextNode("\n");
-          dom.appendChild(el0, el1);
-          return el0;
-        },
-        render: function render(context, env, contextualElement) {
-          var dom = env.dom;
-          var hooks = env.hooks, get = hooks.get, inline = hooks.inline;
-          dom.detectNamespace(contextualElement);
-          var fragment;
-          if (env.useFragmentCache && dom.canClone) {
-            if (this.cachedFragment === null) {
-              fragment = this.build(dom);
-              if (this.hasRendered) {
-                this.cachedFragment = fragment;
-              } else {
-                this.hasRendered = true;
-              }
-            }
-            if (this.cachedFragment) {
-              fragment = dom.cloneNode(this.cachedFragment, true);
-            }
-          } else {
-            fragment = this.build(dom);
-          }
-          var morph0 = dom.createMorphAt(fragment,1,1,contextualElement);
-          inline(env, morph0, context, "gif-row", [], {"class": "row", "row": get(env, context, "row"), "dbClient": get(env, context, "dbClient")});
-          return fragment;
-        }
-      };
-    }());
     return {
       isHTMLBars: true,
       revision: "Ember@1.12.0",
@@ -857,9 +819,27 @@ define('dropgif/templates/login', ['exports'], function (exports) {
       hasRendered: false,
       build: function build(dom) {
         var el0 = dom.createDocumentFragment();
-        var el1 = dom.createComment("");
+        var el1 = dom.createElement("div");
+        dom.setAttribute(el1,"class","jumbotron");
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("h1");
+        var el3 = dom.createTextNode("Нужно подключить Dropbox!");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("p");
+        var el3 = dom.createElement("button");
+        dom.setAttribute(el3,"class","btn btn-success");
+        var el4 = dom.createTextNode("Подключить Dropbox");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n");
+        dom.appendChild(el1, el2);
         dom.appendChild(el0, el1);
-        var el1 = dom.createTextNode("\n");
+        var el1 = dom.createTextNode("\n\n");
         dom.appendChild(el0, el1);
         var el1 = dom.createComment("");
         dom.appendChild(el0, el1);
@@ -869,7 +849,7 @@ define('dropgif/templates/login', ['exports'], function (exports) {
       },
       render: function render(context, env, contextualElement) {
         var dom = env.dom;
-        var hooks = env.hooks, get = hooks.get, block = hooks.block, content = hooks.content;
+        var hooks = env.hooks, element = hooks.element, content = hooks.content;
         dom.detectNamespace(contextualElement);
         var fragment;
         if (env.useFragmentCache && dom.canClone) {
@@ -887,11 +867,10 @@ define('dropgif/templates/login', ['exports'], function (exports) {
         } else {
           fragment = this.build(dom);
         }
-        var morph0 = dom.createMorphAt(fragment,0,0,contextualElement);
-        var morph1 = dom.createMorphAt(fragment,2,2,contextualElement);
-        dom.insertBoundary(fragment, 0);
-        block(env, morph0, context, "each", [get(env, context, "grifd")], {"keyword": "row"}, child0, null);
-        content(env, morph1, context, "outlet");
+        var element0 = dom.childAt(fragment, [0, 3, 0]);
+        var morph0 = dom.createMorphAt(fragment,2,2,contextualElement);
+        element(env, element0, context, "action", ["login"], {});
+        content(env, morph0, context, "outlet");
         return fragment;
       }
     };
@@ -1041,7 +1020,7 @@ define('dropgif/tests/routes/gifs.jshint', function () {
 
   module('JSHint - routes');
   test('routes/gifs.js should pass jshint', function() { 
-    ok(false, 'routes/gifs.js should pass jshint.\nroutes/gifs.js: line 17, col 7, Missing semicolon.\nroutes/gifs.js: line 5, col 22, \'Dropbox\' is not defined.\nroutes/gifs.js: line 13, col 52, \'reject\' is defined but never used.\n\n3 errors'); 
+    ok(false, 'routes/gifs.js should pass jshint.\nroutes/gifs.js: line 25, col 8, Unnecessary semicolon.\n\n1 error'); 
   });
 
 });
@@ -1051,7 +1030,7 @@ define('dropgif/tests/routes/login.jshint', function () {
 
   module('JSHint - routes');
   test('routes/login.js should pass jshint', function() { 
-    ok(true, 'routes/login.js should pass jshint.'); 
+    ok(false, 'routes/login.js should pass jshint.\nroutes/login.js: line 6, col 24, \'Dropbox\' is not defined.\nroutes/login.js: line 16, col 22, \'Dropbox\' is not defined.\nroutes/login.js: line 7, col 44, \'client\' is defined but never used.\n\n3 errors'); 
   });
 
 });
@@ -1317,7 +1296,7 @@ catch(err) {
 if (runningTests) {
   require("dropgif/tests/test-helper");
 } else {
-  require("dropgif/app")["default"].create({"name":"dropgif","version":"0.0.0.c3003c93"});
+  require("dropgif/app")["default"].create({"name":"dropgif","version":"0.0.0.84dd6b2a"});
 }
 
 /* jshint ignore:end */

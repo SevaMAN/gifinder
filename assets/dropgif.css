@@ -6764,6 +6764,9 @@ button.close {
     display: none !important;
   }
 }
+.jumbotron {
+  margin-top: 15px;
+}
 .thumbnail {
   display: inline-block;
   min-height: 200px;
